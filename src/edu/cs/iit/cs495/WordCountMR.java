@@ -1,3 +1,3 @@
-package edu.cs.iit.edu.cs495;
+package edu.cs.iit.cs495;
 public class WordCountMR {
 }

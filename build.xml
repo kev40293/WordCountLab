@@ -1,6 +1,6 @@
 <project name="MyProject" default="dist" basedir=".">
     <description>
-        simple example build file
+        Build file for Hadoop Project
     </description>
   <!-- set global properties for this build -->
   <property name="src" location="src"/>
@@ -33,6 +33,6 @@
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
-    <delete dir="${dist}/*jar"/>
+    <!-- <delete dir="${dist}/"/> -->
   </target>
 </project>
