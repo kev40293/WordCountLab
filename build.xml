@@ -2,10 +2,15 @@
     <description>
         Build file for Hadoop Project
     </description>
+    <presetdef name="javac" >
+       <javac includeantruntime="false" />
+    </presetdef>
   <!-- set global properties for this build -->
   <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="dist"  location="output"/>
+  <property name="pkg" value="edu.cs.iit.cs495" />
+  <property name="pkgpath" value="edu/cs/iit/cs495" />
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -20,19 +25,40 @@
     <javac srcdir="${src}" destdir="${build}"/>
   </target>
 
+  <target name="local" depends="init"
+     description="Compile local map-reduce" >
+     <javac srcdir="${src}" destdir="${build}" 
+        excludes="${pkg}/WordCountMR" />
+  </target>
+
+  <target name="runlocal" depends="local"
+     description="Run local map-reduce" >
+     <java classname="${pkg}.WordCountJ" >
+        <classpath>
+           <pathelement path="${classpath}" />
+           <pathelement location="build" />
+        </classpath>
+     </java>
+  </target>
+
+
   <target name="dist" depends="compile"
         description="generate the distribution" >
     <!-- Create the distribution directory -->
     <mkdir dir="${dist}"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar" basedir="${build}">
+       <Manifest>
+          <attribute name="Main-Class" value="${pkg}.WordCountJ" />
+       </Manifest>
+    </jar>
   </target>
 
   <target name="clean"
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${build}"/>
-    <!-- <delete dir="${dist}/"/> -->
+    <delete dir="${dist}/lib" />
   </target>
 </project>
