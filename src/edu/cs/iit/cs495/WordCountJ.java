@@ -1,13 +1,12 @@
 package edu.cs.iit.cs495;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.io.File;
+import java.util.*;
+import java.util.regex.*;
+import java.io.*;
 public class WordCountJ {
    private class Mapper implements Runnable {
       private HashMap<String, Integer> context;
       private File data;
-      private int reducers;
+      //private int reducers;
       public Mapper(File input,
             HashMap<String,Integer> output){
          context = output;
@@ -15,18 +14,38 @@ public class WordCountJ {
       }
       private void map(String word) {
          // replace with better calculation?
-         int bucket = word.hashCode() % reducers;
-         if (context.containsKey(word))
-            context.put(word, new Integer(1));
-         else
-            context.put(word, new Integer(context.get(word).intValue() + 1));
+         //int bucket = word.hashCode() % reducers;
+         StringTokenizer st = new StringTokenizer(word);
+         Pattern w = Pattern.compile("(\\w)+");
+         while (st.hasMoreTokens()) {
+            Matcher m = w.matcher(st.nextToken());
+            if (m.matches()){
+               if (context.containsKey(m.group(0)))
+                  context.put(m.group(0), new Integer(context.get(m.group(0)).intValue() + 1));
+               else
+                  context.put(m.group(0), new Integer(1));
+            }
+         }
       }
       public void run(){
          //tokenize input
+         try {
+            BufferedReader readin = new BufferedReader(new FileReader(data));
+            String nextline = readin.readLine();
+            while (nextline != null){
+               map(nextline);
+               nextline = readin.readLine();
+            }
+         }catch (Exception e) {
+            System.out.println("Mapper failed");
+         }
+
          /*
           * for ( word in data)
           *     map( word )
           *     done
+          *
+          *     partition into linked list of size n reducers
           */
       }
    }
@@ -57,13 +76,23 @@ public class WordCountJ {
       }
    }
    private int numReducers = 100;
-   private Mapper[] mappers;
-   private HashMap<String, Integer>[][] mapout;
+   private LinkedList<HashMap<String, Integer>> mapout;
    public WordCountJ(String [] filelist){
-      mappers = new Mapper[filelist.length];
-      mapout = new HashMap<String, Integer>[filelist.length][numReducers];
+      Thread [] mapthreads = new Thread[1];
+      //mappers = new Mapper[filelist.length];
+      mapout = new LinkedList<HashMap<String, Integer>>();
       for (int i =0; i < filelist.length; i++){
-         mappers[i] = new Mapper(new File(filelist[i]), numReducers, mapout[i]);
+         mapout.addFirst(new HashMap<String, Integer>());
+         mapthreads[i] =  new Thread(new Mapper(new File(filelist[i]), mapout.peek()));
+         mapthreads[i].start();
+      }
+      try {
+         mapthreads[0].join();
+         for (String k : mapout.peek().keySet()){
+            System.out.println(k + " : " + mapout.peek().get(k).intValue());
+         }
+      } catch (Exception e) {
+         System.out.println("Print result failed");
       }
       /*
        * for x in files
@@ -87,5 +116,7 @@ public class WordCountJ {
 
    public static void main(String [] args){
       System.out.println("Hello World");
+      String [] infiles = {"input/input_00.txt" };
+      WordCountJ hi = new WordCountJ(infiles);
    }
 }
