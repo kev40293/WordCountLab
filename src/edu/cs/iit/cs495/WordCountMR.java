@@ -20,7 +20,7 @@ public class WordCountMR {
               while (st.hasMoreTokens()) {
                  Matcher m = w.matcher(st.nextToken());
                  if (m.matches()){
-                    word.set(m.group(0));
+                    word.set(m.group(0).toLowerCase());
                     output.collect(word, one);
                  }
               }
