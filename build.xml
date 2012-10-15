@@ -32,13 +32,13 @@
     </javac>
   </target>
 
-  <target name="local" depends="init"
-     description="Compile local map-reduce" >
-     <javac srcdir="${src}" destdir="${build}" 
-        excludes="${pkg}/WordCountMR" />
+  <target name="java" depends="init"
+     description="Compile java map-reduce" >
+     <javac srcdir="${src}" destdir="${build}"
+        excludes="**/WordCountMR.java" />
   </target>
 
-  <target name="runlocal" depends="local"
+  <target name="runjava" depends="java"
      description="Run local map-reduce" >
      <java classname="${pkg}.WordCountJ" >
         <classpath>
