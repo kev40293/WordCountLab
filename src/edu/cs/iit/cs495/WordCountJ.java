@@ -39,7 +39,6 @@ public class WordCountJ {
          }
          try {
          } finally {
-            System.out.println("Finished map task");
             latch.countDown();
          }
       }
@@ -61,13 +60,19 @@ public class WordCountJ {
       try {
          latch.await();
          pool.shutdownNow();
+         LinkedList<HashMap<String, Integer>> counts = new LinkedList<HashMap<String, Integer>>();
         for (int i =0; i < filelist.length; i++){
           mapthreads[i].join();
           HashMap<String, Integer> h = mapout.removeLast();
-          System.out.println("File name: " + filelist[i]);
-          for (String k : h.keySet()){
-            System.out.println(k + " : " + h.get(k).intValue());
-          }
+          //System.out.println("File name: " + filelist[i]);
+          counts.add(h);
+        }
+        HashMap<String, Integer> first = counts.removeFirst();
+        for (HashMap<String, Integer> map : counts){
+           merge(first, map);
+        }
+        for (String k : first.keySet()){
+          System.out.println(k + " : " + first.get(k).intValue());
         }
 
       } catch (Exception e) {
@@ -75,6 +80,17 @@ public class WordCountJ {
          e.printStackTrace();
       }
    }
+
+   public void merge(HashMap<String,Integer> base, HashMap<String,Integer> diff) {
+      for (String key : diff.keySet()){
+         Integer value = base.get(key);
+         if (value == null)
+                base.put(key, diff.get(key));
+         else
+                base.put(key, new Integer(value.intValue() + diff.get(key).intValue()));
+      }
+   }
+
 
    public static void main(String [] args){
       File indir = new File(args[0]);
