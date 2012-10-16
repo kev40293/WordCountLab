@@ -22,11 +22,12 @@ public class WordCountJ {
                Pattern w = Pattern.compile("\\b([\\w\\'\\-]+)\\b");
                while (st.hasMoreTokens()) {
                   Matcher m = w.matcher(st.nextToken());
+                  String s = m.group(1).toLowerCase();
                   if (m.matches()){
-                     if (context.containsKey(m.group(1)))
-                        context.put(m.group(1), new Integer(context.get(m.group(1)).intValue() + 1));
+                     if (context.containsKey(s))
+                        context.put(s, new Integer(context.get(s).intValue() + 1));
                      else
-                        context.put(m.group(1), new Integer(1));
+                        context.put(s, new Integer(1));
                   }
                }
                nextline = readin.readLine();
