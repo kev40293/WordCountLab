@@ -46,9 +46,9 @@ public class WordCountJ {
 
    private LinkedList<HashMap<String, Integer>> mapout;
    private CountDownLatch latch;
-   public WordCountJ(String [] filelist){
+   public WordCountJ(String [] filelist, int threads){
       Thread [] mapthreads = new Thread[filelist.length];
-      ExecutorService pool = Executors.newFixedThreadPool(4);
+      ExecutorService pool = Executors.newFixedThreadPool(threads);
       latch = new CountDownLatch(filelist.length);
       mapout = new LinkedList<HashMap<String, Integer>>();
       for (int i =0; i < filelist.length; i++){
@@ -71,8 +71,10 @@ public class WordCountJ {
         for (HashMap<String, Integer> map : counts){
            merge(first, map);
         }
-        for (String k : first.keySet()){
-          System.out.println(k + " : " + first.get(k).intValue());
+        String[] keys = first.keySet().toArray(new String[0]);
+        Arrays.sort(keys);
+        for (int s = 0; s < keys.length; s++) {
+          System.out.println(keys[s] + "\t" + first.get(keys[s]).intValue());
         }
 
       } catch (Exception e) {
@@ -98,6 +100,12 @@ public class WordCountJ {
       for (int i = 0; i < infiles.length; i++){
          infiles[i] = args[0] + "/" + infiles[i];
       }
-      new WordCountJ(infiles);
+      int threads = 1;
+      try {
+         threads = Integer.parseInt(args[1]);
+      } catch (Exception e) {
+      } finally {
+         new WordCountJ(infiles, threads);
+      }
    }
 }

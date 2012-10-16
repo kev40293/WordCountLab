@@ -10,6 +10,7 @@ public class Launcher {
             WordCountMR.main(Arrays.copyOfRange(args, 1, args.length));
       } catch (Exception e) {
          System.out.println("Failed to run specified program");
+         e.printStackTrace();
       }
    }
 }
