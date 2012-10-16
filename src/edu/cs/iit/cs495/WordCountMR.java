@@ -16,11 +16,11 @@ public class WordCountMR {
            public void map (LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
               // Map function goes here
               StringTokenizer st = new StringTokenizer(value.toString());
-              Pattern w = Pattern.compile("(\\w)+");
+              Pattern w = Pattern.compile("\\b([\\w\\'\\-]+)\\b");
               while (st.hasMoreTokens()) {
                  Matcher m = w.matcher(st.nextToken());
                  if (m.matches()){
-                    word.set(m.group(0).toLowerCase());
+                    word.set(m.group(1).toLowerCase());
                     output.collect(word, one);
                  }
               }
