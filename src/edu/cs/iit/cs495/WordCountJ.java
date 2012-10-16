@@ -65,7 +65,11 @@ public class WordCountJ {
 
    public static void main(String [] args){
       System.out.println("Hello World");
-      String [] infiles = {"input/input_00.txt" };
+      File indir = new File(args[0]);
+      String [] infiles = indir.list();
+      for (int i = 0; i < infiles.length; i++){
+         infiles[i] = args[0] + "/" + infiles[i];
+      }
       new WordCountJ(infiles);
    }
 }

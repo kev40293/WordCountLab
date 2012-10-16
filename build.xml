@@ -55,9 +55,9 @@
     <mkdir dir="${dist}"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/MyProject-${DSTAMP}.jar" basedir="${build}">
+    <jar jarfile="${dist}/WordCount.jar" basedir="${build}">
        <Manifest>
-          <attribute name="Main-Class" value="${pkg}.WordCountMR" />
+          <attribute name="Main-Class" value="${pkg}.Launcher" />
        </Manifest>
     </jar>
   </target>
