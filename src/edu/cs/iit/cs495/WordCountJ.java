@@ -22,8 +22,9 @@ public class WordCountJ {
                Pattern w = Pattern.compile("\\b([\\w\\'\\-]+)\\b");
                while (st.hasMoreTokens()) {
                   Matcher m = w.matcher(st.nextToken());
-                  String s = m.group(1).toLowerCase();
+                  
                   if (m.matches()){
+                      String s = m.group(1).toLowerCase();
                      if (context.containsKey(s))
                         context.put(s, new Integer(context.get(s).intValue() + 1));
                      else
