@@ -2,6 +2,7 @@ package edu.cs.iit.cs495;
 import java.util.*;
 import java.util.regex.*;
 import java.io.*;
+import java.util.concurrent.*;
 public class WordCountJ {
    private class Counter implements Runnable {
       private HashMap<String, Integer> context;
@@ -36,19 +37,30 @@ public class WordCountJ {
          }catch (Exception e) {
             System.out.println("Counter failed");
          }
+         try {
+         } finally {
+            System.out.println("Finished map task");
+            latch.countDown();
+         }
       }
    }
 
    private LinkedList<HashMap<String, Integer>> mapout;
+   private CountDownLatch latch;
    public WordCountJ(String [] filelist){
       Thread [] mapthreads = new Thread[filelist.length];
+      ExecutorService pool = Executors.newFixedThreadPool(4);
+      latch = new CountDownLatch(filelist.length);
       mapout = new LinkedList<HashMap<String, Integer>>();
       for (int i =0; i < filelist.length; i++){
          mapout.addFirst(new HashMap<String, Integer>());
          mapthreads[i] =  new Thread(new Counter(new File(filelist[i]), mapout.peek()));
-         mapthreads[i].start();
+         //mapthreads[i].start();
+         pool.submit(mapthreads[i]);
       }
       try {
+         latch.await();
+         pool.shutdownNow();
         for (int i =0; i < filelist.length; i++){
           mapthreads[i].join();
           HashMap<String, Integer> h = mapout.removeLast();
@@ -60,11 +72,11 @@ public class WordCountJ {
 
       } catch (Exception e) {
          System.out.println("Print result failed");
+         e.printStackTrace();
       }
    }
 
    public static void main(String [] args){
-      System.out.println("Hello World");
       File indir = new File(args[0]);
       String [] infiles = indir.list();
       for (int i = 0; i < infiles.length; i++){

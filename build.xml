@@ -45,6 +45,7 @@
            <pathelement path="${classpath}" />
            <pathelement location="build" />
         </classpath>
+        <arg value="${arg0}"/>
      </java>
   </target>
 
@@ -55,7 +56,7 @@
     <mkdir dir="${dist}"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/WordCount.jar" basedir="${build}">
+    <jar jarfile="${dist}/proj3_wc.jar" basedir="${build}">
        <Manifest>
           <attribute name="Main-Class" value="${pkg}.Launcher" />
        </Manifest>
