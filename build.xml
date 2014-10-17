@@ -25,7 +25,7 @@
     <javac srcdir="${src}" destdir="${build}">
        <classpath>
           <pathelement path="${classpath}" />
-          <fileset dir="/home/hadoop/hadoop" >
+          <fileset dir="/home/kevin/amazon-hadoop/hadoop-1.2.1" >
              <include name="**/*.jar" />
           </fileset>
        </classpath>
